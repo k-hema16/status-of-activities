@@ -1,53 +1,60 @@
+// Get references to the necessary DOM elements
 let todoItemsContainer = document.getElementById("todoItemsContainer");
 let addTodoButton = document.getElementById("addTodoButton");
 let saveTodoButton = document.getElementById("saveTodoButton");
 
+// Function to get the todo list from local storage
 function getTodoListFromLocalStorage() {
     let stringifiedTodoList = localStorage.getItem("todoList");
     let parsedTodoList = JSON.parse(stringifiedTodoList);
     if (parsedTodoList === null) {
-        return [];
+        return [];    // Return an empty array if there are no todos in local storage
     } else {
-        return parsedTodoList;
+        return parsedTodoList;    // Return the parsed todo list
     }
 }
 
+// Initialize the todo list and count
 let todoList = getTodoListFromLocalStorage();
 let todosCount = todoList.length;
 
+// Save the todo list to local storage when the save button is clicked
 saveTodoButton.onclick = function() {
     localStorage.setItem("todoList", JSON.stringify(todoList));
 };
 
+// Function to add a new todo item
 function onAddTodo() {
     let userInputElement = document.getElementById("todoUserInput");
     let userInputValue = userInputElement.value;
 
     if (userInputValue === "") {
-        alert("Enter Valid Text");
+        alert("Enter Valid Text");    // Alert if the input is empty
         return;
     }
 
-    todosCount = todosCount + 1;
+    todosCount = todosCount + 1;    // Increment the todo count
 
     let newTodo = {
         text: userInputValue,
         uniqueNo: todosCount,
         isChecked: false
     };
-    todoList.push(newTodo);
-    createAndAppendTodo(newTodo);
-    userInputElement.value = "";
+    todoList.push(newTodo);    // Add the new todo to the list
+    createAndAppendTodo(newTodo);    // Append the new todo to the DOM
+    userInputElement.value = "";    // Clear the input field
 }
 
+// Add a new todo item when the add button is clicked
 addTodoButton.onclick = function() {
     onAddTodo();
 };
 
+// Function to handle the change of todo status (checked/unchecked)
 function onTodoStatusChange(checkboxId, labelId, todoId) {
     let checkboxElement = document.getElementById(checkboxId);
     let labelElement = document.getElementById(labelId);
-    labelElement.classList.toggle("checked");
+    labelElement.classList.toggle("checked");    // Toggle the 'checked' class
 
     let todoObjectIndex = todoList.findIndex(function(eachTodo) {
         let eachTodoId = "todo" + eachTodo.uniqueNo;
@@ -60,7 +67,8 @@ function onTodoStatusChange(checkboxId, labelId, todoId) {
     });
 
     let todoObject = todoList[todoObjectIndex];
-
+    
+    // Toggle the isChecked property of the todo object
     if (todoObject.isChecked === true) {
         todoObject.isChecked = false;
     } else {
@@ -68,6 +76,7 @@ function onTodoStatusChange(checkboxId, labelId, todoId) {
     }
 }
 
+// Function to delete a todo item
 function onDeleteTodo(todoId) {
     let todoElement = document.getElementById(todoId);
     todoItemsContainer.removeChild(todoElement);
@@ -84,6 +93,7 @@ function onDeleteTodo(todoId) {
     todoList.splice(deleteElementIndex, 1);
 }
 
+// Function to create and append a todo item to the DOM
 function createAndAppendTodo(todo) {
     let todoId = "todo" + todo.uniqueNo;
     let checkboxId = "checkbox" + todo.uniqueNo;
@@ -134,6 +144,7 @@ function createAndAppendTodo(todo) {
     deleteIconContainer.appendChild(deleteIcon);
 }
 
+// Create and append each todo item from the list to the DOM when the page loads
 for (let todo of todoList) {
     createAndAppendTodo(todo);
 }
